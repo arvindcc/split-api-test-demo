@@ -1,8 +1,8 @@
 1. Clone GitHub repo for this project locally
 
-git clone linktogithubrepo.com/ projectName
+git clone https://github.com/arvindcc/split-api-test-demo.git
 
-2. cd into your project
+2. cd into your split-api-test-demo
 
 3. [Optional]: Checkout the “Start” tag so you have a fresh install of the project (and not the final files)
 Keep in mind that this step is optional because not all git repos will have a start tag, but most the tutorials that I create for you will have a start tag. Otherwise you can skip this step.
