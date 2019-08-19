@@ -19,7 +19,6 @@ use Illuminate\Support\Facades\Log;
 
 trait GroupTrait
 {
-    use TransactionTrait;
 
     protected function addGroup($input){
         $group = null;
