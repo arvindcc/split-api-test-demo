@@ -18,12 +18,10 @@ use Mockery\Exception;
 
 trait FriendTrait
 {
-    use TransactionTrait;
-
-    protected function syncFriends($friend)
+    protected function syncFriends($friends)
     {
         try {
-            foreach ($friend as $key1 => $friend) {
+            foreach ($friends as $key1 => $friend) {
                 $syncFriend = UserHasFriend::whereIn('user_id', [Auth::user()->id, $friend['userId']])
                     ->whereIn('friend_id',[Auth::user()->id, $friend['userId']])
                     ->first();
