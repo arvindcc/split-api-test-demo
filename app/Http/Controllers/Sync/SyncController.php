@@ -33,7 +33,6 @@ class SyncController extends BaseController
 {
     use FriendTrait;
     use ActivityTrait;
-    use UserTrait;
 
     public function __construct(){
         $this->middleware('jwt.auth');
