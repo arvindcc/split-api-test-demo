@@ -32,7 +32,6 @@ use App\Log as CustomLog;
 class SyncController extends BaseController
 {
     use FriendTrait;
-    use GroupTrait;
     use ActivityTrait;
     use UserTrait;
 
