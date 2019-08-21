@@ -252,9 +252,9 @@ class SyncController extends BaseController
         foreach ($transactions as $key => $transaction){
             if($transaction != null && $transaction->group_id == null){
                 $friendTransactions[$key]['transactionId'] = $transaction->transactionId;
-                $friendTransactions[$key]['addedOn'] = $transaction->created_at->format('Y-m-d H:i:sP');
+                $friendTransactions[$key]['addedOn'] = $transaction->added_on->format('Y-m-d H:i:sP');
                 $friendTransactions[$key]['addedByUserId'] = $transaction->added_by_user_id;
-                $friendTransactions[$key]['date'] = $transaction->added_on->format('Y-m-d H:i:sP');
+                $friendTransactions[$key]['date'] = $transaction->created_at->format('Y-m-d H:i:sP');
                 $friendTransactions[$key]['isSynced'] = true;
 
                 switch ($transaction->transaction_type){
@@ -316,9 +316,9 @@ class SyncController extends BaseController
                 if($transaction != null && $previousTransaction != $transaction->transactionId){
                     $previousTransaction = $transaction->transactionId;
                     $friendTransactions[$iterator]['transactionId'] = $transaction->transactionId;
-                    $friendTransactions[$iterator]['addedOn'] = $transaction->created_at->format('Y-m-d H:i:sP');
+                    $friendTransactions[$iterator]['addedOn'] = $transaction->added_on->format('Y-m-d H:i:sP');
                     $friendTransactions[$iterator]['addedByUserId'] = $transaction->added_by_user_id;
-                    $friendTransactions[$iterator]['date'] = $transaction->added_on->format('Y-m-d H:i:sP');
+                    $friendTransactions[$iterator]['date'] = $transaction->created_at->format('Y-m-d H:i:sP');
                     $friendTransactions[$iterator]['isSynced'] = true;
 
                     switch ($transaction->transaction_type){
