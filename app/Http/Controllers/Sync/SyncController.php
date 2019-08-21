@@ -429,6 +429,53 @@ class SyncController extends BaseController
 
     }
 
+    protected function formatResponseActivityTransaction($transaction){
+        try{
+            $activityTransaction = array();
+            if($transaction != null ){
+                $activityTransaction['transactionId'] = $transaction->transactionId;
+                $activityTransaction['addedOn'] = $transaction->created_at->format('Y-m-d H:i:sP');
+                $activityTransaction['addedByUserId'] = $transaction->added_by_user_id;
+                $activityTransaction['date'] = $transaction->added_on->format('Y-m-d H:i:sP');
+                $activityTransaction['isSynced'] = true;
+                $activityTransaction['note'] = $transaction->note;
+
+                $activityTransaction['image'] = $transaction->image == null ? null : env('APP_URL').env('AVATAR_PATH').$transaction->image;
+
+                switch ($transaction->transaction_type){
+                    case 'payment':
+                        $activityTransaction['type'] = $transaction->transaction_type;
+                        $activityTransaction['amount'] = $transaction->payment->first()->payment_amount;
+                        $activityTransaction['groupId'] = $transaction->group_id;
+                        $activityTransaction['billId'] = $transaction->bill_id;
+                        $activityTransaction['icon'] = $transaction->payment->first()->icon;
+                        $activityTransaction['userOwe'] = $transaction->payment->first()->user_owe_id;
+                        $activityTransaction['userPaid'] = $transaction->payment->first()->user_paid_id;
+
+                        break;
+                    case 'bill':
+                        $bill = Bill::withTrashed()->where('id', $transaction->bill_id)->first();
+                        $activityTransaction['groupId'] = $transaction->group_id;
+                        $activityTransaction['billId'] = $transaction->bill_id;
+                        $activityTransaction['type'] = $transaction->transaction_type;
+                        $activityTransaction['amount'] = $bill->bill_amount;
+                        $activityTransaction['description'] = $bill->description;
+
+                        $splitOptionsType = $bill->split_option_type;
+                        $activityTransaction['splitOptionsType'] = $splitOptionsType;
+                        $activityTransaction['billUsers'] = $this->formatResponseBillUsers($transaction->billUsers, $splitOptionsType);
+                        $activityTransaction['transactions'] = $this->formatResponseBillTransactions($transaction->billTransactions);
+                        $activityTransaction['icon'] = $this->formatResponseBillIcon($bill->billIcon);
+                        break;
+                    default :
+                        break;
+                }
+            }
+            return $activityTransaction;
+        }catch (\Exception $exception){
+            throw new ModelNotFoundException($exception->getMessage());
+        }
+    }
 
     protected function formatResponseActivities($activities){
         try{
@@ -472,7 +519,7 @@ class SyncController extends BaseController
                             $userActivities[$key]['userPaid'] = $payment->user_paid_id;
                             $userActivities[$key]['note'] = $transaction->note;
                             $userActivities[$key]['image'] = $transaction->image;
-
+                            $userActivities[$key]['paymentTransaction'] = $this->formatResponseActivityTransaction($transaction);
                             break;
                         case 'bill':
                             $bill = Bill::withTrashed()->where('id', $transaction->bill_id)->first();
@@ -487,6 +534,7 @@ class SyncController extends BaseController
                             $userActivities[$key]['billUsers'] = $this->formatResponseBillUsers($transaction->billUsers, $splitOptionsType);
                             $userActivities[$key]['transactions'] = $this->formatResponseBillTransactions($transaction->billTransactions);
                             $userActivities[$key]['icon'] = $this->formatResponseBillIcon($bill->billIcon);
+                            $userActivities[$key]['billTransaction'] = $this->formatResponseActivityTransaction($transaction);
                             break;
                         default :
                             break;
