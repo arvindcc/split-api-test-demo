@@ -199,9 +199,9 @@ class SyncController extends BaseController
             foreach ($transactions as $key => $transaction){
                 if($transaction != null ){
                     $friendTransactions[$key]['transactionId'] = $transaction->transactionId;
-                    $friendTransactions[$key]['addedOn'] = $transaction->created_at->format('Y-m-d H:i:sP');
+                    $friendTransactions[$key]['addedOn'] = $transaction->added_on->format('Y-m-d H:i:sP');
                     $friendTransactions[$key]['addedByUserId'] = $transaction->added_by_user_id;
-                    $friendTransactions[$key]['date'] = $transaction->added_on->format('Y-m-d H:i:sP');
+                    $friendTransactions[$key]['date'] = $transaction->created_at->format('Y-m-d H:i:sP');
                     $friendTransactions[$key]['isSynced'] = true;
 
                     switch ($transaction->transaction_type){
