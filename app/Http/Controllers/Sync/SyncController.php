@@ -440,7 +440,7 @@ class SyncController extends BaseController
                 $activityTransaction['isSynced'] = true;
                 $activityTransaction['note'] = $transaction->note;
 
-                $activityTransaction['image'] = $transaction->image == null ? null : env('APP_URL').env('AVATAR_PATH').$transaction->image;
+                $activityTransaction['image'] = $transaction->image == null ? null : env('APP_URL').env('TRANSACTION_IMAGE_PATH').$transaction->image;
 
                 switch ($transaction->transaction_type){
                     case 'payment':
