@@ -331,7 +331,7 @@ class SyncController extends BaseController
                             $friendTransactions[$iterator]['userOwe'] = $transaction->payment->first()->user_owe_id;
                             $friendTransactions[$iterator]['userPaid'] = $transaction->payment->first()->user_paid_id;
                             $friendTransactions[$iterator]['note'] = $transaction->note;
-                            $friendTransactions[$iterator]['image'] = $transaction->image;
+                            $friendTransactions[$iterator]['image'] = $transaction->image == null ? null : env('APP_URL').env('TRANSACTION_IMAGE_PATH').$transaction->image;
                             break;
                         case 'bill':
                             $bill = Bill::withTrashed()->where('id', $transaction->bill_id)->first();
@@ -341,7 +341,7 @@ class SyncController extends BaseController
                             $friendTransactions[$iterator]['amount'] = $bill->bill_amount;
                             $friendTransactions[$iterator]['description'] = $bill->description;
                             $friendTransactions[$iterator]['note'] = $transaction->note;
-                            $friendTransactions[$iterator]['image'] = $transaction->image;
+                            $friendTransactions[$iterator]['image'] = $transaction->image == null ? null : env('APP_URL').env('TRANSACTION_IMAGE_PATH').$transaction->image;
                             $splitOptionsType = $bill->split_option_type;
                             $friendTransactions[$iterator]['splitOptionsType'] = $splitOptionsType;
                             $friendTransactions[$iterator]['billUsers'] = $this->formatResponseBillUsers($transaction->billUsers, $splitOptionsType);
@@ -518,7 +518,7 @@ class SyncController extends BaseController
                             $userActivities[$key]['userOwe'] = $payment->user_owe_id;
                             $userActivities[$key]['userPaid'] = $payment->user_paid_id;
                             $userActivities[$key]['note'] = $transaction->note;
-                            $userActivities[$key]['image'] = $transaction->image;
+                            $userActivities[$key]['image'] = $transaction->image == null ? null : env('APP_URL').env('TRANSACTION_IMAGE_PATH').$transaction->image;
                             $userActivities[$key]['paymentTransaction'] = $this->formatResponseActivityTransaction($transaction);
                             break;
                         case 'bill':
@@ -528,7 +528,7 @@ class SyncController extends BaseController
                             $userActivities[$key]['amount'] = $bill->bill_amount;
                             $userActivities[$key]['description'] = $bill->description;
                             $userActivities[$key]['note'] = $transaction->note;
-                            $userActivities[$key]['image'] = $transaction->image;
+                            $userActivities[$key]['image'] = $transaction->image == null ? null : env('APP_URL').env('TRANSACTION_IMAGE_PATH').$transaction->image;
                             $splitOptionsType = $bill->split_option_type;
                             $userActivities[$key]['splitOptionsType'] = $splitOptionsType;
                             $userActivities[$key]['billUsers'] = $this->formatResponseBillUsers($transaction->billUsers, $splitOptionsType);
