@@ -296,10 +296,10 @@ class SyncController extends BaseController
         foreach ($friendGroups as $key => $friendGroup){
             $userGroups[$key]['groupId'] = $friendGroup['id'];
             $userGroups[$key]['groupName'] = $friendGroup['group_name'];
-            $userGroups[$key]['date'] = $friendGroup['updated_at']->format('Y-m-d H:i:sP');
+            $userGroups[$key]['date'] = $friendGroup['created_at']->format('Y-m-d H:i:sP');
             $userGroups[$key]['icon'] = $friendGroup['icon'];
             $userGroups[$key]['type'] = 'group';
-            $userGroups[$key]['addedOn'] = $friendGroup['created_at']->format('Y-m-d H:i:sP');
+            $userGroups[$key]['addedOn'] = $friendGroup['updated_at']->format('Y-m-d H:i:sP');
         }
         return array_merge($friendTransactions, $userGroups);
     }catch (\Exception $exception){
@@ -434,9 +434,9 @@ class SyncController extends BaseController
             $activityTransaction = array();
             if($transaction != null ){
                 $activityTransaction['transactionId'] = $transaction->transactionId;
-                $activityTransaction['addedOn'] = $transaction->created_at->format('Y-m-d H:i:sP');
+                $activityTransaction['addedOn'] = $transaction->added_on->format('Y-m-d H:i:sP');
                 $activityTransaction['addedByUserId'] = $transaction->added_by_user_id;
-                $activityTransaction['date'] = $transaction->added_on->format('Y-m-d H:i:sP');
+                $activityTransaction['date'] = $transaction->created_at->format('Y-m-d H:i:sP');
                 $activityTransaction['isSynced'] = true;
                 $activityTransaction['note'] = $transaction->note;
 

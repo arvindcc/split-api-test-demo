@@ -94,26 +94,31 @@ trait TransactionTrait
 
     protected function saveImage(String $unformattedBase64_image){
         try{
-          $formattedBase64 = explode(';base64,', $unformattedBase64_image);
-          $base64_image = $formattedBase64[1];
             $filename = '';
-            if($base64_image != null){
-                $avatarImage = base64_decode($base64_image);
+            if(strpos($unformattedBase64_image, 'http')!== false){
+                $splitedImageUrl = explode('/', $unformattedBase64_image);
+                $splitedImageUrlSize = sizeof($splitedImageUrl);
+                $filename = $splitedImageUrl[$splitedImageUrlSize-1];
+            }else{
+                $formattedBase64 = explode(';base64,', $unformattedBase64_image);
+                if(count($formattedBase64) > 0){
+                    $base64_image = $formattedBase64[1];
+                    $avatarImage = base64_decode($base64_image);
+                    $imageUploadPath = env('TRANSACTION_IMAGE_PATH');
 
-                $imageUploadPath = env('TRANSACTION_IMAGE_PATH');
-
-                if (!file_exists($imageUploadPath)) {
-                    File::makeDirectory($imageUploadPath, $mode = 0777, true, true);
+                    if (!file_exists($imageUploadPath)) {
+                        File::makeDirectory($imageUploadPath, $mode = 0777, true, true);
+                    }
+                    $filename = mt_rand(1,10000000000).sha1(time()).".png";
+                    File::put($imageUploadPath.$filename, $avatarImage);
                 }
-                $filename = mt_rand(1,10000000000).sha1(time()).".png";
-                File::put($imageUploadPath.$filename, $avatarImage);
-
             }
+
             Log::critical(json_encode($filename));
             $log = new CustomLog();
             $log['user_id'] = Auth::user()->id;
             $log['action'] = 'Save Transaction Picture';
-            $log['request_parameter'] = $base64_image;
+            $log['request_parameter'] = $unformattedBase64_image;
             $log['exception'] = 'Successfully';
             $log['status_code'] = 200;
             $log->save();
