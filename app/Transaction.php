@@ -35,15 +35,15 @@ use SoftDeletes;
     }
 
     public function payment(){
-        return $this->hasMany('App\Payment', 'transaction_id');
+        return $this->hasMany('App\Payment', 'transaction_id')->withTrashed();
     }
 
     public function billUsers(){
-        return $this->hasMany('App\BillUser', 'transaction_id');
+        return $this->hasMany('App\BillUser', 'transaction_id')->withTrashed();
     }
 
     public function billTransactions(){
-        return $this->hasMany('App\BillTransaction', 'transaction_id');
+        return $this->hasMany('App\BillTransaction', 'transaction_id')->withTrashed();
     }
 
 }
