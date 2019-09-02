@@ -379,7 +379,7 @@ trait ActivityTrait
                     }
                     $this->createActivity($activity, $activity['transactionId'], $transaction['userOwe'], null, null);
                     $this->createActivity($activity, $activity['transactionId'], $transaction['userPaid'], null, null);
-                    if($transaction['userOwe'] != Auth::user()->id || $transaction['userPaid'] != Auth::user()->id){
+                    if($transaction['userOwe'] != Auth::user()->id && $transaction['userPaid'] != Auth::user()->id){
                         $this->createActivity($activity, $activity['transactionId'], Auth::user()->id, null, null);
                     }
                     $transactionToDelete = Transaction::where('transactionId',  $activity['transactionId'])->first();
@@ -431,7 +431,7 @@ trait ActivityTrait
                 Transaction::where('group_id', $activity['groupId'])
                             ->where('user_friends_id', $userHasFriend['id'])
                             ->delete();
-                
+
                 $this->createActivity($activity, null, Auth::user()->id, $addedUser, $removedUser);
                 $this->createActivity($activity, null, $activity['removedUser'], $addedUser, $removedUser);
 
