@@ -305,7 +305,7 @@ class SyncController extends BaseController
     }catch (\Exception $exception){
         throw new ModelNotFoundException($exception->getMessage());
     }
-}
+    }
 
     protected function formatResponseGroupTransaction($transactions){
         try{
@@ -490,16 +490,19 @@ class SyncController extends BaseController
                 $userActivities[$key]['type'] = $activity['type'];
                 $userActivities[$key]['activityType'] = $activity['activity_type'];
                 $userActivities[$key]['addedOn'] = $activity['created_at']->format('Y-m-d H:i:sP');
+                $group = Group::withTrashed()->where('id', $activity['group_id'])->first();
+                $userActivities[$key]['groupName'] = $group['group_name'];
                 $userActivities[$key]['groupId'] = $activity['group_id'];
                 $userActivities[$key]['isSynced'] = true;
                 $userActivities[$key]['addedUser'] = $activity['added_user'];
                 $userActivities[$key]['removedUser'] = $activity['removed_user'];
                 if($activity['group_id'] &&  $activity['transaction_id'] == null){
                     $group = Group::withTrashed()->where('id', $activity['group_id'])->first();
+                    $groupUsers = GroupUser::withTrashed()->where('group_id', $activity['group_id'])->get();
                     $userActivities[$key]['groupName'] = $group['group_name'];
                     $userActivities[$key]['type'] = 'group';
                     $userActivities[$key]['icon'] = $group['icon'];
-
+                    $userActivities[$key]['groupUsers'] = $this->formatResponseGroupUsers($groupUsers);
                 }
 
                 if($activity['transaction_id'] != null){
