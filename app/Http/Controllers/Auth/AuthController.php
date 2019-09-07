@@ -280,8 +280,6 @@ class AuthController extends BaseController
         ];
 
         return response()->json($response,200);
-
-
     }
 
     public function register(Request $request){
@@ -520,6 +518,56 @@ class AuthController extends BaseController
             'message' => $message,
             'status' => $status,
         ];
+        return response()->json($response,200);
+    }
+
+
+    public function checkVersion(Request $request){
+        try{
+            $this->validate($request, [
+                'version' => 'required|string'
+            ]);
+            $version = $request['version'];
+            $versionServer = '1.0';
+            if($version == $versionServer) {
+                $message = "Latest Version";
+                $status = 200;
+            }else{
+                $message = "Old Version";
+                $status = 412;
+            }
+
+        }
+        catch (ValidationException $validationException){
+            $data = [
+                'errorMessages' => $validationException->errors(),
+                'status' => $validationException->status
+            ];
+            return response()->json($data,200);
+        }
+        catch(\Exception $e){
+            $message = "Fail";
+            $status = 500;
+            $data = [
+                'action' => 'Check Version',
+                'exception' => $e->getMessage(),
+                'params' => $request->all()
+            ];
+
+            Log::critical(json_encode($data,$status));
+            $log = new CustomLog();
+            $log['user_id'] = 0;
+            $log['action'] = 'Check Version';
+            $log['request_parameter'] = $request->all();
+            $log['exception'] = $e->getMessage();
+            $log['status_code'] = 500;
+            $log->save();
+        }
+        $response = [
+            'message' => $message,
+            'status' => $status,
+        ];
+
         return response()->json($response,200);
     }
 }

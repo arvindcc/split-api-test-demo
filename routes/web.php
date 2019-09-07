@@ -20,6 +20,7 @@ $router->post('otpverify',array('uses' => 'Auth\AuthController@verifyOtp'));
 $router->post('signup',array('uses' => 'Auth\AuthController@register'));
 $router->post('logout',array('uses' => 'Auth\AuthController@logout'));
 $router->post('forgotpassword',array('uses' => 'Auth\AuthController@forgotPassword'));
+$router->post('checkversion',array('uses' => 'Auth\AuthController@checkVersion'));
 
 $router->group(['prefix' => 'user'], function () use ($router){
     $router->post('changeavatar',array('uses' => 'User\UserController@updateAvatar'));
