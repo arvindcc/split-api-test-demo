@@ -356,4 +356,48 @@ class UserController extends  BaseController
         return response()->json($data, 200);
     }
 
+    public function userInfo(Request $request){
+        $message = '';
+        $status = '';
+        $userData = [];
+        try{
+            $this->validate($request,[
+                'userId' => 'required',
+            ]);
+
+            $userId = $request['userId'];
+
+            $user = User::where('id', $userId)->first();
+            $userData['userId'] = $user['id'];
+            $userData['firstName'] = $user['first_name'];
+            $userData['lastName'] = $user['last_name'];
+            $userData['avatar'] = $user['avatar'] == null ? env('APP_URL').env('DEFAULT_AVATAR_PATH') : env('APP_URL').env('AVATAR_PATH').$user['avatar'];
+
+            $message = 'User Info sent successfully';
+            $status = 200;
+        }catch (\Exception $exception){
+            $status = 500;
+            $message = $exception->getMessage();
+            $data = [
+                'action' => 'User Info',
+                'message' => $message,
+                'status' => 500,
+            ];
+            Log::critical(json_encode($data, $status));
+            $log = new CustomLog();
+            $log['user_id'] = Auth::user()->id;
+            $log['action'] = 'User Info';
+            $log['request_parameter'] = json_encode($request->all());
+            $log['exception'] = $exception->getMessage();
+            $log['status_code'] = 500;
+            $log->save();
+        }
+        $response = [
+            'user' => $userData,
+            'message' => $message,
+            'status' => $status
+        ];
+        return response()->json($response,200);
+    }
+
 }

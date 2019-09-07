@@ -26,6 +26,7 @@ $router->group(['prefix' => 'user'], function () use ($router){
     $router->post('accountedit',array('uses' => 'User\UserController@updateAccount'));
     $router->post('changeemail',array('uses' => 'User\UserController@updateEmail'));
     $router->post('changepassword',array('uses' => 'User\UserController@updatePassword'));
+    $router->post('userinfo',array('uses' => 'User\UserController@userInfo'));
 });
 
 $router->group(['prefix' => 'friend'], function () use ($router){
