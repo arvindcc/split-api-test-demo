@@ -33,6 +33,7 @@ $router->group(['prefix' => 'friend'], function () use ($router){
     $router->post('searchfriends',array('uses' => 'Friend\FriendController@findFriends'));
     $router->post('addfriend',array('uses' => 'Friend\FriendController@addFriend'));
     $router->post('invitefriend',array('uses' => 'Friend\FriendController@inviteFriend'));
+    $router->post('deletefriend',array('uses' => 'Friend\FriendController@deleteFriend'));
 });
 
 $router->group(['prefix' => 'group'], function () use ($router){
