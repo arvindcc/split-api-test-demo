@@ -199,8 +199,8 @@ class FriendController extends  BaseController
                 'friend.lastName' => 'required|string|max:255',
                 'friend.mobile' => 'required|integer|min:1111111111|max:9999999999|regex:/[0-9]/|unique:users,mobile_no',
             ]);
-            // Update App URL (Google Play URL) in this section 
-            $appUrl = 'www.google.com';
+            // Update App URL (Google Play URL) in this section
+            $appUrl = 'https://play.google.com/store/apps/details?id=in.co.arema.combine';
             $friend = $request['friend'];
             $firstName = $friend['firstName'];
             $lastName = $friend['lastName'];
