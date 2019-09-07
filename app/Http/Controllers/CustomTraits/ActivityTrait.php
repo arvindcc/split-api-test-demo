@@ -391,7 +391,6 @@ trait ActivityTrait
                     $group = Group::where('id', $activity['groupId'])->first();
                     $groupUsers = $group->groupUsers;
                     $group->delete();
-                    Transaction::where('group_id', $activity['groupId'])->delete();
                     GroupBalance::where('group_id', $activity['groupId'])->delete();
                     foreach ($groupUsers as $groupUser){
                        if($groupUser['user_id'] != Auth::user()->id){

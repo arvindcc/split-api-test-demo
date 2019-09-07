@@ -38,6 +38,7 @@ $router->group(['prefix' => 'friend'], function () use ($router){
 $router->group(['prefix' => 'group'], function () use ($router){
     $router->post('addgroup', array('uses' => 'Group\GroupController@createGroup'));
     $router->post('groupedit', array('uses' => 'Group\GroupController@updateGroupInfo'));
+    $router->post('adddeletegroup', array('uses' => 'Group\GroupController@addDeleteGroup'));
 });
 
 $router->group(['prefix' => 'sync'], function () use ($router){
