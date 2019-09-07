@@ -107,9 +107,24 @@ class AuthController extends BaseController
             $data = array();
             $this->validate($request, [
                 'mobile' => 'required|integer|min:1111111111|max:9999999999|regex:/[0-9]/',
+                'type' => 'required|string|max:255',
             ]);
             $mobile_no = $request['mobile'];
-            if($mobile_no == null){
+            $type = $request['type'];
+            $user = User::where('mobile_no', $mobile_no)->first();
+            if ($user != null && $type == 'signup') {
+              $message = "User already exist for this mobile number.";
+              $data = [
+                  'message' => $message,
+              ];
+              return response()->json($data,409);
+            } elseif ($user == null && $type == 'forgotpassword') {
+              $message = "User doesn't exist for this mobile number.";
+              $data = [
+                  'message' => $message,
+              ];
+              return response()->json($data,404);
+            } elseif ($mobile_no == null) {
                 $message = "Please Enter a Valid Mobile No.";
                 $status = 412;
             }else{
@@ -189,7 +204,6 @@ class AuthController extends BaseController
         }
         $response = [
             'data' => $data,
-
         ];
         return response()->json($response,200);
     }
