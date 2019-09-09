@@ -231,6 +231,8 @@ class UserController extends  BaseController
     }
 
     public function updatePassword(Request $request){
+        $data = [];
+        $token = '';
         try{
             $this->validate($request,[
                 'oldPassword' => 'required|string|min:6',
@@ -239,12 +241,15 @@ class UserController extends  BaseController
             ]);
             $user = Auth::user();
             $token = $request['token'];
-            if($user != null){
+
+            if($token = JWTAuth::attempt(['email' => $user->email, 'password' => $request['oldPassword']])) {
+                if($user != null){
                 $updateStatus = $user->update([
                     'password' => Hash::make($request['newPassword']),
                 ]);
                 if($updateStatus == true){
                     JWTAuth::invalidate($request['token']);
+                    JWTAuth::invalidate($token);
                     $token = JWTAuth::attempt([
                         'email' => $user['email'],
                         'password' => $request['newPassword']
@@ -254,16 +259,22 @@ class UserController extends  BaseController
                 }else{
                     $message = 'Sorry Cannot updated Password';
                     $status = 500;
-                    $userData = '';
                 }
                 $data = [
                     'message' => $message,
-                    'userData' => $userData,
                     'token' => $token,
                     'status' => $status,
                 ];
             }else{
                 $message = 'Unauthorized User';
+                $status = 401;
+                $data = [
+                    'message' => $message,
+                    'status' => $status,
+                ];
+            }
+            }else{
+                $message = "Incorect old password";
                 $status = 401;
                 $data = [
                     'message' => $message,
@@ -292,7 +303,7 @@ class UserController extends  BaseController
             $log = new CustomLog();
             $log['user_id'] = Auth::user()->id;
             $log['action'] = 'Find Password';
-            $log['request_parameter'] = $request->all();
+            $log['request_parameter'] = json_encode($request->all());
             $log['exception'] = $exception->getMessage();
             $log['status_code'] = 500;
             $log->save();
