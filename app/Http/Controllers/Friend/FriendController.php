@@ -246,7 +246,15 @@ class FriendController extends  BaseController
 
             }else {
                 $message = 'Unable to invited Friend';
-                $status = 200;
+                $status = 417;
+                $data = [
+                    'message' => $message,
+                    'status' => $status,
+                ];
+                $response = [
+                    'data' => $data
+                ];
+                return response()->json($response, 417);
             }
             $data = [
                 'message' => $message,
