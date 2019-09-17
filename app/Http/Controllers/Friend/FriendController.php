@@ -155,6 +155,7 @@ class FriendController extends  BaseController
                       'status' => $status,
                   ];
                 }
+                $this->incrementTransactionCount($user['id']);
             }else{
                 $data = [
                     'message' => 'Friend data not found',
