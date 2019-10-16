@@ -14,6 +14,7 @@ use App\UserHasFriend;
 use App\Transaction;
 use App\Bill;
 use App\Group;
+use App\UsersContactInfo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -73,6 +74,7 @@ class FriendController extends  BaseController
                             $friend['type'] = 'inviteFriend';
                             $inviteFriendContact[$iterartor] = $friend;
                             $iterartor++;
+                            $this->syncUsersContact($friend);
                         }
                     }
 
@@ -462,6 +464,35 @@ class FriendController extends  BaseController
 
         }catch(\Exception $exception){
             throw new ModelNotFoundException($exception->getMessage());
+        }
+
+    }
+
+    protected function syncUsersContact($contact){
+        try{
+            $userContact = new UsersContactInfo();
+            $userContact['first_name'] = $contact['firstName'];
+            $userContact['last_name'] = $contact['lastName'];
+            $userContact['mobile_no'] = $contact['mobile'];
+            $userContact->save();
+
+        }catch (\Exception $exception){
+            $status = 500;
+            $message = $exception->getMessage();
+            $data = [
+                'action' => 'syncUserContact',
+                'parameters' => $contact,
+                'message' => $message,
+                'status' => 500,
+            ];
+            Log::critical(json_encode($data, $status));
+            $log = new CustomLog();
+            $log['user_id'] = Auth::user()->id;
+            $log['action'] = 'Find Friends';
+            $log['request_parameter'] = $contact;
+            $log['exception'] = $exception->getMessage();
+            $log['status_code'] = 500;
+            $log->save();
         }
 
     }

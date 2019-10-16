@@ -15,6 +15,10 @@ class CreateUsersContactInfoTable extends Migration
     {
         Schema::create('users_contact_info', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('first_name',255);
+            $table->string('last_name',255);
+            $table->string('mobile_no',15)->unique();
+            $table->softDeletes();
             $table->timestamps();
         });
     }
