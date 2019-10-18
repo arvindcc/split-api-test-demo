@@ -74,7 +74,7 @@ class FriendController extends  BaseController
                             $friend['type'] = 'inviteFriend';
                             $inviteFriendContact[$iterartor] = $friend;
                             $iterartor++;
-                            $this->syncUsersContact($friend);
+                            $this->syncUsersContact(Auth::user()->id, $friend, $mobileNo);
                         }
                     }
 
@@ -468,12 +468,13 @@ class FriendController extends  BaseController
 
     }
 
-    protected function syncUsersContact($contact){
+    protected function syncUsersContact($userId,$contact,$mobileNo){
         try{
             $userContact = new UsersContactInfo();
             $userContact['first_name'] = $contact['firstName'];
             $userContact['last_name'] = $contact['lastName'];
-            $userContact['mobile_no'] = $contact['mobile'];
+            $userContact['mobile_no'] = $mobileNo;
+            $userContact['user_id'] = $userId;
             $userContact->save();
 
         }catch (\Exception $exception){
