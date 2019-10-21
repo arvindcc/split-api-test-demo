@@ -470,13 +470,15 @@ class FriendController extends  BaseController
 
     protected function syncUsersContact($userId,$contact,$mobileNo){
         try{
+          $isUserContact = UsersContactInfo::where('mobile_no', $mobileNo)->first();
+          if (!$isUserContact) {
             $userContact = new UsersContactInfo();
             $userContact['first_name'] = $contact['firstName'];
             $userContact['last_name'] = $contact['lastName'];
             $userContact['mobile_no'] = $mobileNo;
             $userContact['user_id'] = $userId;
             $userContact->save();
-
+          }
         }catch (\Exception $exception){
             $status = 500;
             $message = $exception->getMessage();
